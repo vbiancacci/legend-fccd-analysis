@@ -1,0 +1,11 @@
+{
+    "Detector": "V09372A",
+    "Campaign": "c1",
+    "Measurement": "am_HS1_top_dlt",
+    "Run": "0001",
+    "phiPosition":0.0,
+    "rPosition": 57.5,
+    "zPosition": 3.0,
+    "EnergyFilter": "cuspEmax_ctc_cal",
+    "Cuts": "False"
+}
