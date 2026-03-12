@@ -20,7 +20,7 @@ def main():
 
     par = argparse.ArgumentParser(description="Gamma line count analysis and FCCD/AV calculation",
                                   epilog="Report bugs to <valentina.biancacci@gssi.it>",
-                                  usage="python3 make.py [OPERATION: -l, -m, -p, -s, -a, -v] [CONFIG FILE] [OPTIONS: -o path]"
+                                  usage="python3 make.py [OPERATION: -c, -l, -m, -p, -s, -a, -v] [CONFIG FILE] [OPTIONS: -o path]"
     )
     arg = par.add_argument
     arg("-d", "--data",  nargs=1, help="Gamma line count data", metavar="")

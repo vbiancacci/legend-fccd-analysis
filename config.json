@@ -1,11 +1,12 @@
 {
-    "Detector": "V09372A",
+    "Detector": "V14673A",
     "Campaign": "c1",
-    "Measurement": "am_HS1_top_dlt",
-    "Run": "0001",
+    "Measurement": "ba_HS4_top_dlt",
+    "Run": "0002",
     "phiPosition":0.0,
     "rPosition": 57.5,
     "zPosition": 3.0,
     "EnergyFilter": "cuspEmax_ctc_cal",
-    "Cuts": "False"
+    "Cuts": "True",
+    "CutParamenters": "is_valid_cal"
 }

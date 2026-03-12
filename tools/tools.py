@@ -30,7 +30,6 @@ currentPath=os.path.dirname(os.path.realpath(__file__))
 
 
 
-
 def GammaLineCounting(ConfigNameFile, data_or_sim, OutPath):
     with open(ConfigNameFile) as json_file: 
         config = json.load(json_file)
@@ -40,15 +39,16 @@ def GammaLineCounting(ConfigNameFile, data_or_sim, OutPath):
     measurement    = config['Measurement']
     energy_filter  = config['EnergyFilter']
     cuts           = config['Cuts']
+    cut_parameters = config['CutParamenters']
 
     run, _, source_position= checks.DefineRunPosition(ConfigNameFile)
     meas_ID=f"{detector}-{campaign}-{measurement}-{run}-{source_position}"
     energy_resolution_par = GetEnergyResolutionParameters(detector, campaign, measurement, run, energy_filter)
     
     if data_or_sim=="data":
-        datapath = "/global/cfs/cdirs/m2676/users/biancacci/hades-proc/legend-dataflow-hades/generated/tier/hit"
+        datapath = "/global/cfs/cdirs/m2676/data/teststands/hades/prodenv/ref/v1.1.0/generated/tier/hit/"
         #ADD campaign below!
-        hit_files = sorted(glob.glob(f"{datapath}/{detector}/{measurement}/char_data-{detector}-{measurement}-{run}*hit.lh5"))
+        hit_files = sorted(glob.glob(f"{datapath}/{detector}/{campaign}/{measurement}/char_data-{detector}-{measurement}-{run}*hit.lh5"))
         if len(hit_files)==0:
             print(f"Tier hit not found for this measurement: {detector}/{campaign}/{measurement}/{run}")
             sys.exit()
@@ -58,21 +58,18 @@ def GammaLineCounting(ConfigNameFile, data_or_sim, OutPath):
         if cuts == False:
             for file in hit_files:
                 #get data, no cuts
-                tb = sto.read_object("dsp",file)[0]
+                tb = sto.read_object("hit",file)[0]
                 df = lh5.Table.get_dataframe(tb)
                 hit_list.append(df)
             dataframe = pd.concat(hit_list, axis=0, ignore_index=True)
             energies = dataframe[energy_filter]
-        else: #apply cuts  TO CHANGE!!!!
+        else:
             for file in hit_files:
-                tb = sto.read_object("dsp",file)[0]
+                tb = sto.read_object("hit",file)[0]
                 df = lh5.Table.get_dataframe(tb)
                 hit_list.append(df)
             dataframe = pd.concat(hit_list, axis=0, ignore_index=True)
-            energies = dataframe[energy_filter]
-            #sigma_cut = 4
-            #df_total, failed_cuts = load_df_with_cuts(hit_files, "raw",cut_file_path = None,cut_parameters= {'bl_mean':sigma_cut,'bl_std':sigma_cut}, verbose=True)
-            #failed_cuts = failed_cuts[energy_filter]
+            energies = dataframe.query(cut_parameters)[energy_filter]
         if measurement[:6]=="am_HS1":
             gl_am1_data.GammaLine_Counting(energies, detector, measurement, meas_ID, energy_filter, energy_resolution_par, cuts, OutPath)
         elif measurement[:6]=="am_HS6":
@@ -115,6 +112,7 @@ def BestFCCD(ConfigNameFile, option, OutPath):
     measurement    = config['Measurement']
     energy_filter  = config['EnergyFilter']
     cuts           = config['Cuts']
+    cut_parameters = config['CutParamenters']
 
     dir=OutPath
     print("working directory: ", dir)
@@ -153,7 +151,7 @@ def BestFCCD(ConfigNameFile, option, OutPath):
         else: #ba
             gl_ba.GammaLine_Counting(energies_sim, "sim", detector, measurement, sim_ID, None, energy_resolution_par, None, OutPath)
     else:# option=="plot":
-        datapath = "/global/cfs/cdirs/m2676/users/biancacci/hades-proc/legend-dataflow-hades/generated/tier/hit"
+        datapath = "/global/cfs/cdirs/m2676/data/teststands/hades/prodenv/ref/v1.1.0/generated/tier/hit/"
         hit_files = sorted(glob.glob(f"{datapath}/{detector}/{campaign}/{measurement}/char_data-{detector}-{measurement}-{run}*hit.lh5"))
         if len(hit_files)==0:
             print(f"Tier hit not found for this measurement: {detector}/{campaign}/{measurement}/{run}")
@@ -164,18 +162,18 @@ def BestFCCD(ConfigNameFile, option, OutPath):
         if cuts == False:
             for file in hit_files:
                 #get data, no cuts
-                tb = sto.read_object("dsp",file)[0]
+                tb = sto.read_object("hit",file)[0]
                 df = lh5.Table.get_dataframe(tb)
                 hit_list.append(df)
             dataframe_data = pd.concat(hit_list, axis=0, ignore_index=True)
             energies_data = dataframe_data[energy_filter]
-        else: #apply cuts  TO CHANGE!!!!
+        else: 
             for file in hit_files:
-                tb = sto.read_object("dsp",file)[0]
+                tb = sto.read_object("hit",file)[0]
                 df = lh5.Table.get_dataframe(tb)
                 hit_list.append(df)
             dataframe_data = pd.concat(hit_list, axis=0, ignore_index=True)
-            energies_data = dataframe_data[energy_filter]
+            energies_data = dataframe_data.query(cut_parameters)[energy_filter]
         if len(hit_files)==0:
             print(f"Tier hit not found for this measurement: {detector}/{campaign}/{measurement}/{run}")
             sys.exit()
@@ -184,7 +182,7 @@ def BestFCCD(ConfigNameFile, option, OutPath):
             xmax =120
         else: #ba
             peak = "C_356"
-            xmqx=450
+            xmax=450
         OutputFileID = f"{sim_ID}-{energy_filter}"
         ps.PlotSpectra(energies_data, energies_sim, detector, measurement, sim_ID_bestFCCD, peak, xmax,cuts, OutputFileID, OutPath)
         
@@ -200,6 +198,7 @@ def CalculateFCCD(ConfigNameFile, OutPath):
     measurement    = config['Measurement']
     energy_filter  = config['EnergyFilter']
     cuts           = config['Cuts']
+
     try:
         TL_model      = config['TL_model']
         frac_FCCDbore = config['frac_FCCDbore']
@@ -266,7 +265,6 @@ def CalculateFCCD(ConfigNameFile, OutPath):
             FCCD_list.append(fccd)
 
     if measurement[:6]=="am_HS1":
-        cuts=False
         cf_am1.CalculateFCCD(observable_sim_list, observable_err_sim_list, observable_data, observable_data_err, OutputFileID, FCCD_list, cuts, OutPath)
     elif measurement[:6]=="am_HS6":
         cf_am6.CalculateFCCD(observable_sim_list, observable_err_sim_list, observable_data, observable_data_err, OutputFileID, FCCD_list, cuts, OutPath)
