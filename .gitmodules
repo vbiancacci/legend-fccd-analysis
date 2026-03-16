@@ -1,0 +1,3 @@
+[submodule "tools/hades-metadata"]
+	path = tools/hades-metadata
+	url = git@github.com:legend-exp/hades-metadata.git
