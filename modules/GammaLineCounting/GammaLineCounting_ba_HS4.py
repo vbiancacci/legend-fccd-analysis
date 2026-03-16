@@ -166,7 +166,7 @@ def GammaLine_Counting(energies, data_sim, detector, measurement, ID, energy_fil
 
             fig, ax = plt.subplots()
             hist.plot_hist(hist_peak, bins_peak, var=None, show_stats=False, stats_hloc=0.75, stats_vloc=0.85)
-            plt.plot(xfit, yfit, label=r'Total fit: Gauss$_{59.5keV}$ + Step$_{59.5keV}$')
+            plt.plot(xfit, yfit, label = fr"Gauss$_{{{peaks[index]}\,\mathrm{{keV}}}}$ + Step$_{{{peaks[index]}\,\mathrm{{keV}}}}$")
             #plt.plot(xfit, yfit_step, "--", label =r'step($x,\mu,\sigma,bkg,s$)')
 
             plt.xlim(xmin, xmax)
