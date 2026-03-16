@@ -269,7 +269,7 @@ def CalculateFCCD(ConfigNameFile, OutPath):
     elif measurement[:6]=="am_HS6":
         cf_am6.CalculateFCCD(observable_sim_list, observable_err_sim_list, observable_data, observable_data_err, OutputFileID, FCCD_list, cuts, OutPath)
     else: #ba
-        cf_ba.CalculateFCCD(observable_sim_list, observable_err_sim_list, observable_data, observable_data_err, FCCD_list, detector, campaign, measurement, run, TL_model, frac_FCCDbore, energy_filter, OutPath)
+        cf_ba.CalculateFCCD(observable_sim_list, observable_err_sim_list, observable_data, observable_data_err, OutputFileID, FCCD_list, cuts, OutPath)
         
 
 

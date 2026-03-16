@@ -12,7 +12,7 @@ from utils.utils import  ChiSqCalc
 def CalculateFCCD(O_Ba133_sim_list, O_Ba133_err_sim_list, O_Ba133_data, O_Ba133_data_err, OutputFileID, FCCD_list, cuts, OutPath):
 
     print("working directory: ", OutPath)
-    dir = OutPath+"/FCCD/am_HS1/"
+    dir = OutPath+"/FCCD/ba_HS4/"
 
     if not os.path.exists(dir+"plots"):
         os.makedirs(dir+"plots")
@@ -53,7 +53,7 @@ def CalculateFCCD(O_Ba133_sim_list, O_Ba133_err_sim_list, O_Ba133_data, O_Ba133_
     chi_sq, p_value, residuals, dof = ChiSqCalc(xdata, ydata, yerr, exponential_decay, popt)
 
     fig, ax = plt.subplots()
-    plt.errorbar(xdata, ydata, xerr=0, yerr =yerr, label = "simulations", color= plot_colors["simulations"], elinewidth = 1, fmt='x', ms = 3.0, mew = 3.0)
+    plt.errorbar(xdata, ydata, xerr=0, yerr =yerr, label = "simulations", color= plot_colors["MC"], elinewidth = 1, fmt='x', ms = 3.0, mew = 3.0)
     xfit = np.linspace(min(xdata), max(xdata), 1000)
     yfit = exponential_decay(xfit,*popt)
     plt.plot(xfit, yfit, color=plot_colors["MC_fit"], label = "fit: a*exp(-bx)+ c")
@@ -154,7 +154,7 @@ def CalculateFCCD(O_Ba133_sim_list, O_Ba133_err_sim_list, O_Ba133_data, O_Ba133_
     #=============Complete Plot===================
 
     props = dict(boxstyle='round', alpha=0.5)
-    info_str = '\n'.join((r'MC fit: $y=a*e^{-bx}+c$',r'$a=%.3f \pm %.3f$' % (a, np.sqrt(pcov[0][0])), r'$b=%.3f \pm %.3f$' % (b, np.sqrt(pcov[1][1])), r'$\chi^2/dof=%.2f/%.0f$'%(chi_sq, dof), r'FCCD_data=$%.3f^{+%.2f}_{-%.2f}$ mm' % (FCCD_data, FCCD_err_total_up, FCCD_err_total_low)))
+    info_str = '\n'.join((r'MC fit: $y=a*e^{-bx}+c$',r'$a=%.3f \pm %.3f$' % (a, np.sqrt(pcov[0][0])), r'$b=%.3f \pm %.3f$' % (b, np.sqrt(pcov[1][1])),  r'$c=%.3f \pm %.3f$' % (c, np.sqrt(pcov[2][2])), r'$\chi^2/dof=%.2f/%.0f$'%(chi_sq, dof), r'FCCD_data=$%.3f^{+%.2f}_{-%.2f}$ mm' % (FCCD_data, FCCD_err_total_up, FCCD_err_total_low)))
     plt.text(0.02, 0.98, info_str, transform=ax.transAxes, fontsize=8,verticalalignment='top', bbox=props) #ax.text..ax.tra
 
     #plot horizontal data line and errors
@@ -217,7 +217,11 @@ def CalculateFCCD(O_Ba133_sim_list, O_Ba133_err_sim_list, O_Ba133_data, O_Ba133_
         "b": b,
         "b_err": b_err,
         "b_corr_err": (b_up_corr-b_low_corr)/2,
-        "b_uncorr_err": (b_up_uncorr-b_low_uncorr)/2        
+        "b_uncorr_err": (b_up_uncorr-b_low_uncorr)/2,    
+        "c": c,
+        "c_err": c_err,
+        "c_corr_err": (c_up_corr-c_low_corr)/2,
+        "c_uncorr_err": (c_up_uncorr-c_low_uncorr)/2     
     }
 
     if cuts == False:

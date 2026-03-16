@@ -119,15 +119,9 @@ def DefineRunPosition(ConfigNameFile):
     checkInteger(r_position)
     checkInteger(z_position)
 
-    MetaDataPath="/global/cfs/cdirs/m2676/data/teststands/hades/prodenv/ref/v1.0.0/inputs/hardware/config"
+    MetaDataPath="/global/cfs/cdirs/m2676/users/biancacci/fccd/legend-fccd-analysis/tools/hades-metadata/hardware/configuration"
     MeasurementPath=MetaDataPath+"/"+detector+"/"+campaign+"/"+measurement+".yaml"
     checkMeasurement(MeasurementPath)
-
-    #using dbetto to read the metadata
-    # db = TextDB(MetaDataPath)
-    # node = getattr(db, detector)
-    # node = getattr(node, campaign)
-    # node = getattr(node, measurement)
     
     if run[0]=="r":
         print(f"Run {run} not found in the metadata.  The run name format is 4-digit string with leading zeros, e.g. '0001' ")
